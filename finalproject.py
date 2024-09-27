@@ -1,6 +1,6 @@
 import random
 
-# Data structures to hold user and item data
+
 users: dict = {}
 items: dict = {}
 
