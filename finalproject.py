@@ -1,16 +1,17 @@
 import random
 
-users = {}
-items = {}
+# Data structures to hold user and item data
+users: dict = {}
+items: dict = {}
 
-def main():
+def main() -> None:
     while True:
         print("\nWelcome to the Lost and Found System!")
         start_command = input("Type 'Start' to begin or 'Exit' to quit: ").strip().lower()
 
         if start_command == "start":
-            user_type = input("Are you a student or staff? Enter 'student' or 'staff': ") \
-            .strip().lower()
+            user_type = input("Are you a student or staff? Enter 'student' or 'staff': ")\
+                .strip().lower()
 
             if user_type == "student":
                 handle_student()
@@ -24,27 +25,26 @@ def main():
         else:
             print("Invalid command. Type 'Start' to begin or 'Exit' to quit.")
 
-def handle_student():
+def handle_student() -> None:
     while True:
         choice = input("Do you want to 'login' or 'signup'? ").lower().strip()
         if choice in ["signup", "login"]:
+            if choice == "signup":
+                signup()
+            elif choice == "login":
+                email = input("Enter your email: ")
+                if email in users:
+                    student_menu(email)
+                else:
+                    print("User not found, please sign up.")
+                    signup()
             break
         print("Invalid choice. Please type 'login' or 'signup'.")
 
-    if choice == "signup":
-        signup()
-    elif choice == "login":
-        email = input("Enter your email: ")
-        if email in users:
-            student_menu(email)
-        else:
-            print("User not found, please sign up.")
-            signup()
-
-def signup():
+def signup() -> None:
     name = input("Enter your name: ")
     email = input("Enter your email: ")
-    phone = input("Enter your phone number: ")
+    phone = int(input("Enter your phone number as an integer: "))
     major = input("Enter your major: ")
     degree = input("Are you a Bachelor or Master? ")
     year = input("Enter your academic year: ")
@@ -63,7 +63,7 @@ def signup():
     print("Account created successfully!")
     student_menu(email)
 
-def student_menu(email):
+def student_menu(email: str) -> None:
     while True:
         print("\nChoose an option:")
         print("a) Report a found item")
@@ -74,33 +74,31 @@ def student_menu(email):
         print("f) Exit to main menu")
         
         choice = input("Enter your choice (a, b, c, d, e, f): ").lower().strip()
-        if choice == 'a':
-            report_item(email)
-        elif choice == 'b':
-            check_lost_item()
-        elif choice == 'c':
-            view_reported_items(email)
-        elif choice == 'd':
-            view_claimed_items(email)
-        elif choice == 'e':
-            view_points(email)
-        elif choice == 'f':
-            break
+        if choice in ['a', 'b', 'c', 'd', 'e', 'f']:
+            if choice == 'a':
+                report_item(email)
+            elif choice == 'b':
+                check_lost_item()
+            elif choice == 'c':
+                view_reported_items(email)
+            elif choice == 'd':
+                view_claimed_items(email)
+            elif choice == 'e':
+                view_points(email)
+            elif choice == 'f':
+                break
         else:
             print("Invalid choice. Please enter one of the following: a, b, c, d, e, f.")
 
-        if input("\nWould you like to perform another action? (yes/no): ").lower().strip() != "yes":
-            break
-
-def report_item(email):
+def report_item(email: str) -> None:
     date = input("Enter the date you found the item (YYYY-MM-DD): ")
     item_name = input("Enter the name of the item: ")
     locations = [
         "Welcome.Space", "Mission.Space", "Startup.Space(0.7)", "Personal.Space(6.1)",
-        "Personal.Space(6.2)", "Personal.Space(6.3)", "Personal.Space(6.4)", "Startup.Space(08)",
-        "Bar.Space", "Lab.Space", "Crew.Space", "Open.Space", "Venture.Space",
-        "Growth.Space", "Interactive.Space", "Head.Space", "Meeting.Space", "Cyber.Space",
-        "Data.Space"
+        "Personal.Space(6.2)", "Personal.Space(6.3)", "Personal.Space(6.4)", 
+        "Startup.Space(08)", "Bar.Space", "Lab.Space", "Crew.Space", "Open.Space", 
+        "Venture.Space", "Growth.Space", "Interactive.Space", "Head.Space", 
+        "Meeting.Space", "Cyber.Space", "Data.Space"
     ]
     print("Choose the location where you found the item:")
     while True:
@@ -130,10 +128,10 @@ def report_item(email):
     print("Thank you for your information. Your report has been saved.")
     print(f"Item ID: {unique_id}")
 
-def generate_unique_id():
+def generate_unique_id() -> int:
     return random.randint(100000, 999999)
 
-def check_lost_item():
+def check_lost_item() -> None:
     while True:
         method = input("Search by 'date' or 'location'? ").strip().lower()
         if method in ["date", "location"]:
@@ -147,10 +145,10 @@ def check_lost_item():
         print("Choose the location to check for your lost item:")
         locations = [
             "Welcome.Space", "Mission.Space", "Startup.Space(0.7)", "Personal.Space(6.1)",
-            "Personal.Space(6.2)", "Personal.Space(6.3)", "Personal.Space(6.4)", "Startup.Space(08)",
-            "Bar.Space", "Lab.Space", "Crew.Space", "Open.Space", "Venture.Space",
-            "Growth.Space", "Interactive.Space", "Head.Space", "Meeting.Space", "Cyber.Space",
-            "Data.Space"
+            "Personal.Space(6.2)", "Personal.Space(6.3)", "Personal.Space(6.4)", 
+            "Startup.Space(08)", "Bar.Space", "Lab.Space", "Crew.Space", "Open.Space", 
+            "Venture.Space", "Growth.Space", "Interactive.Space", "Head.Space", 
+            "Meeting.Space", "Cyber.Space", "Data.Space"
         ]
         for idx, location in enumerate(locations):
             print(f"{idx+1}) {location}")
@@ -177,8 +175,7 @@ def check_lost_item():
     except ValueError:
         print("Invalid input. Please enter a valid numeric ID or type 'unknown'.")
 
-
-def claim_item(item_id):
+def claim_item(item_id: int) -> None:
     claimer_email = input("Enter your email to claim this item: ")
     if claimer_email in users and claimer_email != items[item_id]['reporter']:
         claim_date = input("Enter the date you are claiming this item (YYYY-MM-DD): ")
@@ -191,40 +188,39 @@ def claim_item(item_id):
     else:
         print("You cannot claim your own reported item.")
 
-
-def display_items(items_dict):
+def display_items(items_dict: dict) -> None:
     print("\nFound Items:")
     for id, item in items_dict.items():
-        print(f"Unique ID: {id}, Name: {item['name']}, Date: {item['date']}, Location: {item['location']}, Reporter: {item['reporter']}")
+        print(f"Unique ID: {id}, Name: {item['name']}, Date: {item['date']}, \
+Location: {item['location']}, Reporter: {item['reporter']}")
 
-
-def view_reported_items(email):
+def view_reported_items(email: str) -> None:
     print("\nItems you have reported:")
     for item_id in users[email]["reported"]:
         item = items[item_id]
         status = item['status']
         claimed_by = item['claimer'] if status == 'claimed' else "Not claimed"
-        print(f"Unique ID: {item_id}, Name: {item['name']}, Date: {item['date']}, Location: {item['location']}, Status: {status}, Claimed by: {claimed_by}")
+        print(f"Unique ID: {item_id}, Name: {item['name']}, Date: {item['date']}, \
+Location: {item['location']}, Status: {status}, Claimed by: {claimed_by}")
 
-
-def view_claimed_items(email):
+def view_claimed_items(email: str) -> None:
     print("\nItems you have claimed:")
     for item_id in users[email]["claimed"]:
         item = items[item_id]
-        print(f"Unique ID: {item_id}, Name: {item['name']}, Claimed Date: {item['claim_date']}, Location: {item['location']}, Reported by: {item['reporter']}")
-
+        print(f"Unique ID: {item_id}, Name: {item['name']}, Claimed Date: \
+{item['claim_date']}, Location: {item['location']}, Reported by: {item['reporter']}")
 
 def view_points(email: str) -> None:
     print(f"\nYour current points: {users[email]['points']}")
 
-def handle_staff():
+def handle_staff() -> None:
     key = input("Enter the staff key: ")
     if key == "123456":
         staff_menu()
     else:
         print("Invalid key.")
 
-def staff_menu():
+def staff_menu() -> None:
     while True:
         print("\nStaff Options:")
         print("a) View all registered students' profiles")
@@ -241,23 +237,27 @@ def staff_menu():
         else:
             print("Invalid choice. Please enter one of the following: a, b, c.")
 
-        if input("\nWould you like to perform another action? (yes/no): ").lower().strip() != "yes":
+        if input("\nWould you like to perform another action? (yes/no): ")\
+                .lower().strip() != "yes":
             break
 
-def view_all_student_profiles():
+def view_all_student_profiles() -> None:
     if not users:
         print("No registered users found.")
         return
     for email, user in users.items():
-        print(f"Email: {email}, Name: {user['name']}, Items Reported: {len(user['reported'])}, Items Claimed: {len(user['claimed'])}, Points: {user['points']}")
+        print(f"Email: {email}, Name: {user['name']}, Items Reported: \
+{len(user['reported'])}, Items Claimed: {len(user['claimed'])}, Points: {user['points']}")
 
-def display_all_items():
+def display_all_items() -> None:
     if not items:
         print("No items have been reported.")
         return
     for item_id, item in items.items():
-        status_info = f"Claimed by {item['claimer']} on {item['claim_date']}" if item['status'] == 'claimed' else "Not claimed"
-        print(f"Unique ID: {item_id}, Item Name: {item['name']}, Reporter: {item['reporter']}, Location: {item['location']}, Status: {status_info}, Note: {item['note']}")
+        status_info = f"Claimed by {item['claimer']} on {item['claim_date']}"\
+            if item['status'] == 'claimed' else "Not claimed"
+        print(f"Unique ID: {item_id}, Item Name: {item['name']}, Reporter: \
+{item['reporter']}, Location: {item['location']}, Status: {status_info}, Note: {item['note']}")
 
 if __name__ == "__main__":
     main()
