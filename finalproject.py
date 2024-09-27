@@ -12,7 +12,6 @@ def main() -> None:
         if start_command == "start":
             user_type = input("Are you a student or staff? Enter 'student' or 'staff': ")\
                 .strip().lower()
-
             if user_type == "student":
                 handle_student()
             elif user_type == "staff":
@@ -24,6 +23,7 @@ def main() -> None:
             break
         else:
             print("Invalid command. Type 'Start' to begin or 'Exit' to quit.")
+
 
 def handle_student() -> None:
     while True:
@@ -40,6 +40,7 @@ def handle_student() -> None:
                     signup()
             break
         print("Invalid choice. Please type 'login' or 'signup'.")
+
 
 def signup() -> None:
     name = input("Enter your name: ")
@@ -62,6 +63,7 @@ def signup() -> None:
     }
     print("Account created successfully!")
     student_menu(email)
+
 
 def student_menu(email: str) -> None:
     while True:
@@ -89,6 +91,7 @@ def student_menu(email: str) -> None:
                 break
         else:
             print("Invalid choice. Please enter one of the following: a, b, c, d, e, f.")
+
 
 def report_item(email: str) -> None:
     date = input("Enter the date you found the item (YYYY-MM-DD): ")
@@ -128,8 +131,10 @@ def report_item(email: str) -> None:
     print("Thank you for your information. Your report has been saved.")
     print(f"Item ID: {unique_id}")
 
+
 def generate_unique_id() -> int:
     return random.randint(100000, 999999)
+
 
 def check_lost_item() -> None:
     while True:
@@ -175,8 +180,10 @@ def check_lost_item() -> None:
     except ValueError:
         print("Invalid input. Please enter a valid numeric ID or type 'unknown'.")
 
+
 def claim_item(item_id: int) -> None:
     claimer_email = input("Enter your email to claim this item: ")
+    # Check if the email exists in the system and is not the same as the reporter's email.
     if claimer_email in users and claimer_email != items[item_id]['reporter']:
         claim_date = input("Enter the date you are claiming this item (YYYY-MM-DD): ")
         items[item_id]['status'] = 'claimed'
@@ -186,13 +193,19 @@ def claim_item(item_id: int) -> None:
         users[claimer_email]['claimed'].append(item_id)
         print("Congratulations for finding your lost item!")
     else:
-        print("You cannot claim your own reported item.")
+        # Provide a more specific error message depending on the issue
+        if claimer_email not in users:
+            print("Email not registered. Please ensure you are registered in the system.")
+        elif claimer_email == items[item_id]['reporter']:
+            print("You cannot claim your own reported item.")
+
 
 def display_items(items_dict: dict) -> None:
     print("\nFound Items:")
     for id, item in items_dict.items():
         print(f"Unique ID: {id}, Name: {item['name']}, Date: {item['date']}, \
 Location: {item['location']}, Reporter: {item['reporter']}")
+
 
 def view_reported_items(email: str) -> None:
     print("\nItems you have reported:")
@@ -203,6 +216,7 @@ def view_reported_items(email: str) -> None:
         print(f"Unique ID: {item_id}, Name: {item['name']}, Date: {item['date']}, \
 Location: {item['location']}, Status: {status}, Claimed by: {claimed_by}")
 
+
 def view_claimed_items(email: str) -> None:
     print("\nItems you have claimed:")
     for item_id in users[email]["claimed"]:
@@ -210,8 +224,10 @@ def view_claimed_items(email: str) -> None:
         print(f"Unique ID: {item_id}, Name: {item['name']}, Claimed Date: \
 {item['claim_date']}, Location: {item['location']}, Reported by: {item['reporter']}")
 
+
 def view_points(email: str) -> None:
     print(f"\nYour current points: {users[email]['points']}")
+
 
 def handle_staff() -> None:
     key = input("Enter the staff key: ")
@@ -219,6 +235,7 @@ def handle_staff() -> None:
         staff_menu()
     else:
         print("Invalid key.")
+
 
 def staff_menu() -> None:
     while True:
@@ -241,6 +258,7 @@ def staff_menu() -> None:
                 .lower().strip() != "yes":
             break
 
+
 def view_all_student_profiles() -> None:
     if not users:
         print("No registered users found.")
@@ -248,6 +266,7 @@ def view_all_student_profiles() -> None:
     for email, user in users.items():
         print(f"Email: {email}, Name: {user['name']}, Items Reported: \
 {len(user['reported'])}, Items Claimed: {len(user['claimed'])}, Points: {user['points']}")
+
 
 def display_all_items() -> None:
     if not items:
